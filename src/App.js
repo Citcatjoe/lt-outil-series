@@ -1,42 +1,38 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.scss';
 import "./components/frame.scss";
+import MovieCards from "./components/movieCards.js";
 import Frame from "./components/frame";
-import { throws } from 'assert';
-
-const articles = [
-  {
-    image: "punisher.jpg",
-    title: "Punisher",
-    text: "blablablablabla"
-  },
-  {
-    image: "avatar.jpg",
-    title: "Avatar",
-    text: "ké ké ké ké ké ké ké"
-  },
-  {
-    image: "Battlestar.jpg",
-    title: "Battlestar Galactica",
-    text: "Piou Piou Piou Piou Piou"
-  }
-];
+// import { throws } from 'assert';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isVisible: false,
+      isVisible: false, // DEBUG / false
       article: null
     };
     this.showFrame = this.showFrame.bind(this);
+    this.seeArticle = this.seeArticle.bind(this);
   }
 
-  seeArticle(article_index) {
-    this.setState({ article: articles[article_index] });
-    this.showFrame();
+  componentDidMount() {
+    this.setState({ isLoading: true });
+    fetch('http://web.tcch.ch/tv-test/') //     // https://www.letemps.ch/tv-shows
+    .then( (response) => {
+      return response.json() })
+    .then( (json) => {
+      this.setState({data: json, isLoading: false});
+    }).catch(function() {
+        console.log("Error when loading json");
+    });
+  };
+
+  seeArticle(article) {
+    this.setState({ article: article });
+    this.showFrame()
   }
+
 
   showFrame() {
     this.setState((state, props) => ({
@@ -51,19 +47,17 @@ class App extends Component {
   }
 
   render() {
-    const itemListing = articles.map((article, index) => (
-      <article key={index} onClick={this.seeArticle.bind(this, index)}>
-        <img src="{article.image}" />
-        <div class="article-bottom">{article.title}</div>
-      </article>
-    ));
 
     return (
       <div className="App">
         <aside>
-          <div className="aside-header">
-            <button onClick={this.showFrame} />
-            {itemListing}
+          <div>
+            <MovieCards
+              data={this.state.data}
+              showData={this.seeArticle}
+              numberOfCards='one'
+              additionalClasses='stackable stuff yolo'
+            />
           </div>
         </aside>
         <main>

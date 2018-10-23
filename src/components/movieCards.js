@@ -19,7 +19,7 @@ class movieCards extends React.Component<Props> {
 
     return (
       <div
-      className={`article-teasers ui stackable coming-soon ${this.props
+      className={`${this.props
         .numberOfCards} ${this.props.additionalClasses} text cards`}
         >
         {this.props.data.map((article, index) => {
@@ -28,7 +28,7 @@ class movieCards extends React.Component<Props> {
           }
 
           return (
-            <article key={index} onClick={this.props.showData.bind(this, article)}>
+            <article className='card ui stackable' key={index} onClick={this.props.showData.bind(this, article)}>
             <img src={article.np8_main_media} alt={article.title} />
             <div className="article-bottom">{article.title}</div>
             </article>
